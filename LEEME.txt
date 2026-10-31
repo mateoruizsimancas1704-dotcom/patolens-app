@@ -1,0 +1,10 @@
+COMO OBTENER EL APK (Android) Y EL IPA (iPhone) GRATIS CON GITHUB
+1. Crea una cuenta gratis en github.com y un repositorio nuevo (Public).
+2. Sube TODO el contenido de esta carpeta (arrastrar y soltar en "Add file > Upload files").
+   Si la carpeta oculta .github no se sube, crea los archivos a mano: "Add file > Create new file",
+   escribe .github/workflows/android.yml y pega el contenido; repite con ios.yml.
+3. Entra a la pestana "Actions". Se ejecutan solas (o toca "Run workflow").
+4. Cuando terminen (5-10 min), abre cada ejecucion y descarga el archivo en "Artifacts":
+   PatoLens-APK (Android) y PatoLens-IPA (iPhone).
+ANDROID: pasa el APK al celular e instalalo (permite "instalar apps desconocidas").
+IPHONE: el IPA sale sin firmar. Instalalo desde un computador con Sideloadly o AltStore (gratis, con tu Apple ID; dura 7 dias y se renueva).
