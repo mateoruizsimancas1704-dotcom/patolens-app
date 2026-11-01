@@ -1,0 +1,31 @@
+name: Compilar IPA (iPhone)
+on: [workflow_dispatch, push]
+jobs:
+  ipa:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Preparar carpeta www
+        run: mkdir www && cp index.html manifest.webmanifest sw.js icon-192.png icon-512.png www/
+      - run: npm install
+      - run: npx cap add ios
+      - name: Permisos
+        run: |
+          P=ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string PatoLens usa la camara para fotografiar lesiones" $P
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string PatoLens permite elegir fotos y planos" $P
+          /usr/libexec/PlistBuddy -c "Add :NSLocationWhenInUseUsageDescription string PatoLens registra la ubicacion de la lesion" $P
+      - run: npx cap sync ios
+      - name: Compilar sin firmar
+        run: |
+          cd ios/App
+          if [ -d App.xcworkspace ]; then T="-workspace App.xcworkspace"; else T="-project App.xcodeproj"; fi
+          xcodebuild $T -scheme App -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+          mkdir Payload && cp -r build/Build/Products/Release-iphoneos/App.app Payload/
+          zip -qr PatoLens.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PatoLens-IPA
+          path: ios/App/PatoLens.ipa
